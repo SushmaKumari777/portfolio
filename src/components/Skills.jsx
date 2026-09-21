@@ -1,8 +1,69 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Section from "../common/Section";
 import { skills } from "../data/portfolioData";
 import Technologies from "../common/Technologies";
 import CursorScrollEffect from "../common/CursorScrollEffect";
+
+function SkillBar({ skill }) {
+  const barRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [displayLevel, setDisplayLevel] = useState(0);
+
+  useEffect(() => {
+    if (!isVisible) {
+      setDisplayLevel(0);
+      return undefined;
+    }
+
+    let animationFrame;
+    const startTime = performance.now();
+    const duration = 700;
+
+    const animateLevel = (currentTime) => {
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      setDisplayLevel(Math.round(progress * skill.level));
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animateLevel);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animateLevel);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isVisible, skill.level]);
+
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.35 },
+    );
+
+    observer.observe(bar);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={barRef}>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-lg font-bold">{skill.name}</p>
+          <p className="text-sm text-ash">{skill.category}</p>
+        </div>
+        <span className="text-sm font-black text-blood-300">{displayLevel}%</span>
+      </div>
+      <div className="mt-2 h-2 overflow-hidden rounded bg-white/10">
+        <div
+          className="h-full rounded bg-blood-500 shadow-glow transition-[width] duration-700 ease-out"
+          style={{ width: isVisible ? `${skill.level}%` : "0%" }}
+        />
+      </div>
+    </div>
+  );
+}
 
 function Skills() {
   return (
@@ -14,9 +75,8 @@ function Skills() {
       
       <div className="grid gap-8 lg:grid-cols-1">
         {skills.map((group, gIndex) => (
-           <CursorScrollEffect>
+          <CursorScrollEffect key={group.title}>
           <div
-            key={group.title}
             className="group rounded border border-white/10 bg-white/[0.02] p-6 transition duration-300 hover:border-blood-500"
             style={{ animationDelay: `${gIndex * 80}ms` }}
           >
@@ -30,21 +90,7 @@ function Skills() {
                   
                   <div className="grid gap-4">
                     {group.items.map((skill) => (
-                      <div key={skill.name} className="">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-lg font-bold">{skill.name}</p>
-                            <p className="text-sm text-ash">{skill.category}</p>
-                          </div>
-                          <span className="text-sm font-black text-blood-300">{skill.level}%</span>
-                        </div>
-                        <div className="mt-2 h-2 overflow-hidden rounded bg-white/10">
-                          <div
-                            className="h-full rounded bg-blood-500 shadow-glow transition-all duration-700"
-                            style={{ width: `${skill.level}%` }}
-                          />
-                        </div>
-                      </div>
+                      <SkillBar key={skill.name} skill={skill} />
                     ))}
                     
                   </div>
