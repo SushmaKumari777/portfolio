@@ -22,15 +22,25 @@ function CursorHoverEffect({ className = "" }) {
       pointerRef.current = { x: event.clientX, y: event.clientY };
     };
 
+    const updateTouch = (event) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      updatePointer({ clientX: touch.clientX, clientY: touch.clientY });
+    };
+
     const resetPointer = () => {
       effect.classList.remove("cursor-hover-effect--active");
     };
 
     window.addEventListener("pointermove", updatePointer, { passive: true });
+    window.addEventListener("touchstart", updateTouch, { passive: true });
+    window.addEventListener("touchmove", updateTouch, { passive: true });
     window.addEventListener("pointerleave", resetPointer);
 
     return () => {
       window.removeEventListener("pointermove", updatePointer);
+      window.removeEventListener("touchstart", updateTouch);
+      window.removeEventListener("touchmove", updateTouch);
       window.removeEventListener("pointerleave", resetPointer);
     };
   }, []);

@@ -217,7 +217,18 @@ a {
 }
 
 @media (hover: none) {
-  .cursor-hover-effect {
-    display: none;
+  .cursor-hover-effect__shadow {
+    width: 140px;
+    height: 140px;
+  }
+
+  .cursor-hover-effect__flame {
+    width: 24px;
+    height: 46px;
+  }
+
+  .cursor-hover-effect__flame--inner {
+    width: 14px;
+    height: 30px;
   }
 }

@@ -18,6 +18,12 @@ function CursorScrollEffect({ children, className = "" }) {
       effect.classList.add("cursor-scroll-effect--active");
     };
 
+    const updateTouch = (event) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      updatePointer({ clientX: touch.clientX, clientY: touch.clientY });
+    };
+
     const resetPointer = () => {
       effect.classList.remove("cursor-scroll-effect--active");
       effect.style.setProperty("--tilt-x", "0deg");
@@ -26,10 +32,16 @@ function CursorScrollEffect({ children, className = "" }) {
 
     effect.addEventListener("pointermove", updatePointer);
     effect.addEventListener("pointerleave", resetPointer);
+    effect.addEventListener("touchstart", updateTouch, { passive: true });
+    effect.addEventListener("touchmove", updateTouch, { passive: true });
+    effect.addEventListener("touchend", resetPointer, { passive: true });
 
     return () => {
       effect.removeEventListener("pointermove", updatePointer);
       effect.removeEventListener("pointerleave", resetPointer);
+      effect.removeEventListener("touchstart", updateTouch);
+      effect.removeEventListener("touchmove", updateTouch);
+      effect.removeEventListener("touchend", resetPointer);
     };
   }, []);
 
