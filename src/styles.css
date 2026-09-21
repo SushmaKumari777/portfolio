@@ -1,0 +1,223 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  /* Configurable color variables (change these at runtime or in this file) */
+  /* Primary accent palette (replaced red with blue variant #3693F4) */
+  --color-blood-50: #f0f7ff;
+  --color-blood-100: #dceeff;
+  --color-blood-300: #7fbcff;
+  --color-blood-500: #3693F4;
+  --color-blood-600: #2e7bd0;
+  --color-blood-700: #245f9f;
+  --color-blood-900: #12324f;
+  /* RGB form for shadows and rgba usages */
+  --color-blood-rgb: 54,147,244;
+
+  --color-coal: #08080a;
+  --color-iron: #17171b;
+  --color-ash: #b8b8c2;
+  --color-coal-rgb: 8,8,10;
+
+  background: var(--color-coal);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--color-coal);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--color-blood-500);
+  color: white;
+}
+
+.page-loader {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--color-coal);
+}
+
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+  border: 4px solid transparent;
+  border-radius: 50%;
+  border-color: var(--color-blood-100) transparent;
+  animation: loader-spin 1s infinite linear;
+}
+
+.loader::before,
+.loader::after {
+  content: "";
+  grid-area: 1 / 1;
+  margin: 2px;
+  border: inherit;
+  border-radius: 50%;
+}
+
+.loader::before {
+  border-color: var(--color-blood-500) transparent;
+  animation: loader-spin 0.5s infinite linear reverse;
+}
+
+.loader::after {
+  margin: 8px;
+}
+
+@keyframes loader-spin {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.cursor-scroll-effect {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  position: relative;
+  isolation: isolate;
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+.cursor-scroll-effect__content {
+  position: relative;
+  z-index: 1;
+  transform: translateZ(0) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style: preserve-3d;
+  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.cursor-scroll-effect--active .cursor-scroll-effect__content {
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.2);
+}
+
+.cursor-hover-effect {
+  --cursor-x: 50vw;
+  --cursor-y: 50vh;
+  --fire-angle: 0deg;
+  --fire-speed: 1;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.cursor-hover-effect__shadow,
+.cursor-hover-effect__flame,
+.cursor-hover-effect__core,
+.cursor-hover-effect__sparks {
+  position: absolute;
+  left: var(--cursor-x);
+  top: var(--cursor-y);
+  display: block;
+  pointer-events: none;
+  border-radius: 999px;
+  transform: translate(-50%, -50%) rotate(var(--fire-angle));
+}
+
+.cursor-hover-effect__shadow {
+  z-index: 0;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(var(--color-blood-rgb), 0.34), rgba(var(--color-blood-rgb), 0.12) 36%, transparent 72%);
+  filter: blur(22px);
+  animation: cursor-fire-pulse 700ms ease-in-out infinite alternate;
+}
+
+.cursor-hover-effect__flame {
+  z-index: 1;
+  width: 30px;
+  height: 58px;
+  border-radius: 62% 38% 58% 42%;
+  transform-origin: 50% 100%;
+  filter: blur(1px);
+  animation: cursor-fire-dance 500ms ease-in-out infinite alternate;
+}
+
+.cursor-hover-effect__flame--outer {
+  background: linear-gradient(150deg, var(--color-blood-100) 4%, var(--color-blood-500) 48%, var(--color-blood-700) 100%);
+  box-shadow: 0 0 20px rgba(var(--color-blood-rgb), 0.75), 0 0 42px rgba(var(--color-blood-rgb), 0.42);
+}
+
+.cursor-hover-effect__flame--inner {
+  z-index: 2;
+  width: 17px;
+  height: 37px;
+  background: linear-gradient(150deg, #ffffff, var(--color-blood-100) 45%, var(--color-blood-300));
+  animation-delay: -180ms;
+}
+
+.cursor-hover-effect__core {
+  z-index: 3;
+  width: 9px;
+  height: 9px;
+  background: #ffffff;
+  box-shadow: 0 0 10px #fff, 0 0 22px var(--color-blood-300), 0 0 34px rgba(var(--color-blood-rgb), 0.8);
+}
+
+.cursor-hover-effect__sparks {
+  z-index: 4;
+  width: 4px;
+  height: 4px;
+  background: var(--color-blood-100);
+  box-shadow: -18px -24px 0 0 var(--color-blood-300), 20px -34px 0 -1px #ffffff, 25px 12px 0 -1px var(--color-blood-500), -26px 16px 0 -1px var(--color-blood-100);
+  animation: cursor-fire-sparks 650ms linear infinite;
+}
+
+.cursor-hover-effect--active {
+  opacity: 1;
+}
+
+@keyframes cursor-fire-pulse {
+  from { transform: translate(-50%, -50%) scale(0.92); }
+  to { transform: translate(-50%, -50%) scale(1.08); }
+}
+
+@keyframes cursor-fire-dance {
+  from { transform: translate(-50%, -50%) rotate(var(--fire-angle)) scale(0.86, 0.94); }
+  to { transform: translate(-50%, -50%) rotate(calc(var(--fire-angle) + 8deg)) scale(1.08, 1.04); }
+}
+
+@keyframes cursor-fire-sparks {
+  from { opacity: 0.2; transform: translate(-50%, -50%) rotate(var(--fire-angle)) scale(0.7); }
+  50% { opacity: 1; }
+  to { opacity: 0; transform: translate(-50%, -78%) rotate(var(--fire-angle)) scale(1.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-hover-effect {
+    display: none;
+  }
+}
+
+@media (hover: none) {
+  .cursor-hover-effect {
+    display: none;
+  }
+}

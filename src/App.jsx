@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
-import { createEffect } from "magic-cursor-effect";
+ 
 import BackgroundEffects from "./common/BackgroundEffects"
+import CursorHoverEffect from "./common/CursorHoverEffect";
+import Loader from "./common/Loader";
 const Header = lazy( () => import ("./components/Header"));
 const Hero = lazy(() => import("./components/Hero"));
 const About = lazy(() => import("./components/About"));
@@ -11,14 +13,7 @@ const Services = lazy(() => import("./components/Services"))
 const Experience = lazy(() => import("./components/Experience"))
 const Contact = lazy( ()=> import("./components/Contact"))
 const Footer = lazy(() => import("./components/Footer"))
-
-const cursorOptions = {
-  emission: 4,
-  size: 21,
-  lifeMs: 1400,
-  rise: 0.8,
-  drift: 0.85,
-};
+ 
 
 function getThemeAccentColor() {
   const rgbValue = getComputedStyle(document.documentElement)
@@ -28,30 +23,13 @@ function getThemeAccentColor() {
   return `rgba(${rgbValue || "54,147,244"}, 0.95)`;
 }
 
-function useMagicCursorEffect(rootRef) {
-  useEffect(() => {
-    const rootElement = rootRef.current;
-
-    if (!rootElement) {
-      return undefined;
-    }
-
-    const effect = createEffect("smoke", rootElement, {
-      ...cursorOptions,
-      color: getThemeAccentColor(),
-    });
-
-    return () => {
-      effect.destroy();
-    };
-  }, [rootRef]);
-}
+ 
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const rootRef = useRef(null);
 
-  useMagicCursorEffect(rootRef);
+ 
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -60,40 +38,43 @@ function App() {
 
   return (
     <main ref={rootRef} className="relative isolate min-h-screen overflow-hidden bg-coal text-white">
-      <BackgroundEffects />
+      <BackgroundEffects position="top-right" />
+      <CursorHoverEffect/>
       <Header
         isMenuOpen={isMenuOpen}
         onToggle={() => setIsMenuOpen((value) => !value)}
         onNavigate={scrollToSection}
       />
-      <Suspense fallback={<div className="px-5 py-10 text-center text-ash">Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <Hero />
       </Suspense>
-      <Suspense fallback={<div className="px-5 py-10 text-center text-ash">Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <ProblemCount />
       </Suspense>
-      <Suspense fallback={<div className="px-5 py-10 text-center text-ash">Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <About />
       </Suspense>
       
-      <Suspense fallback={<div className="px-5 py-10 text-center text-ash">Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <Skills />
       </Suspense>
-      <Suspense fallback={<div className="px-5 py-10 text-center text-ash">Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <Services />
       </Suspense>
-      <Suspense fallback={<div className="px-5 py-10 text-center text-ash">Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <Projects />
       </Suspense>
-      <Suspense fallback={<div className="px-5 py-10 text-center text-ash">Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <Experience />
       </Suspense>
-      <Suspense fallback={<div className="px-5 py-10 text-center text-ash">Loading...</div>}>
+      <Suspense fallback={<Loader />}>
         <Contact />
       </Suspense>
-      <Suspense fallback={<div className="px-5 py-10 text-center text-ash">Loading...</div>}>
+      <Suspense fallback={<Loader />}>
       <Footer/>
       </Suspense>
+       
+      
     </main>
   );
 }
